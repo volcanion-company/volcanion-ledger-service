@@ -1,0 +1,746 @@
+{
+	"info": {
+		"_postman_id": "ledger-service-collection",
+		"name": "Volcanion Ledger Service API",
+		"description": "Payment Gateway Ledger Service - Production Grade API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "ledger-service"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user-001\",\n  \"currency\": \"VND\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							]
+						},
+						"description": "Creates a new account for a user with the specified currency"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{accountId}}"
+							]
+						},
+						"description": "Retrieves account details by account ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account by User ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts/user/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"user",
+								"{{userId}}"
+							]
+						},
+						"description": "Retrieves account details by user ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Account management endpoints"
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "Topup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 100000,\n  \"transactionId\": \"TOPUP-{{$timestamp}}\",\n  \"description\": \"Customer topup from bank transfer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/topup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"topup"
+							]
+						},
+						"description": "Add funds to an account"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 50000,\n  \"fee\": 1000,\n  \"tax\": 500,\n  \"transactionId\": \"PAYMENT-{{$timestamp}}\",\n  \"merchantId\": \"MERCHANT-001\",\n  \"description\": \"Purchase from online store\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/payment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"payment"
+							]
+						},
+						"description": "Process a payment transaction with fees and taxes"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Refund",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 50000,\n  \"transactionId\": \"REFUND-{{$timestamp}}\",\n  \"originalTransactionId\": \"PAYMENT-123456789\",\n  \"description\": \"Refund for cancelled order\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/refund",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"refund"
+							]
+						},
+						"description": "Process a refund for a previous transaction"
+					},
+					"response": []
+				},
+				{
+					"name": "Apply Adjustment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 10000,\n  \"transactionId\": \"ADJUSTMENT-{{$timestamp}}\",\n  \"reason\": \"Compensation for service disruption\",\n  \"adjustedBy\": \"admin-001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/adjustment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"adjustment"
+							]
+						},
+						"description": "Apply a manual balance adjustment (positive only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/history/{{accountId}}?page=1&pageSize=50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"history",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "50",
+									"description": "Items per page (default: 50)"
+								},
+								{
+									"key": "transactionType",
+									"value": "PAYMENT",
+									"description": "Filter by transaction type (TOPUP, PAYMENT, REFUND, ADJUSTMENT)",
+									"disabled": true
+								},
+								{
+									"key": "startDate",
+									"value": "2025-01-01T00:00:00Z",
+									"description": "Filter transactions from this date",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2025-12-31T23:59:59Z",
+									"description": "Filter transactions until this date",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieve paginated transaction history for an account with optional filters"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction History - Filtered by Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/history/{{accountId}}?page=1&pageSize=20&transactionType=PAYMENT",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"history",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "20"
+								},
+								{
+									"key": "transactionType",
+									"value": "PAYMENT"
+								}
+							]
+						},
+						"description": "Get transaction history filtered by transaction type"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction History - Filtered by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/history/{{accountId}}?page=1&pageSize=50&startDate=2025-12-01T00:00:00Z&endDate=2025-12-31T23:59:59Z",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"history",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "50"
+								},
+								{
+									"key": "startDate",
+									"value": "2025-12-01T00:00:00Z"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-12-31T23:59:59Z"
+								}
+							]
+						},
+						"description": "Get transaction history filtered by date range"
+					},
+					"response": []
+				}
+			],
+			"description": "Transaction processing and history endpoints"
+		},
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Get overall health status with database check details"
+					},
+					"response": []
+				},
+				{
+					"name": "Readiness Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/ready",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"ready"
+							]
+						},
+						"description": "Check if service is ready to accept traffic"
+					},
+					"response": []
+				},
+				{
+					"name": "Liveness Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/live",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health",
+								"live"
+							]
+						},
+						"description": "Check if service is alive"
+					},
+					"response": []
+				}
+			],
+			"description": "Health check endpoints for monitoring"
+		},
+		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "Prometheus Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/metrics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"metrics"
+							]
+						},
+						"description": "Get Prometheus metrics for monitoring"
+					},
+					"response": []
+				}
+			],
+			"description": "Prometheus metrics endpoint"
+		},
+		{
+			"name": "Complete Workflow Example",
+			"item": [
+				{
+					"name": "1. Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save account ID and user ID for subsequent requests",
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"accountId\", jsonData.id);",
+									"    pm.environment.set(\"userId\", jsonData.userId);",
+									"    pm.environment.set(\"accountNumber\", jsonData.accountNumber);",
+									"    console.log(\"Account created: \" + jsonData.accountNumber);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"user-workflow-{{$timestamp}}\",\n  \"currency\": \"VND\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Topup Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save transaction ID for refund test",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    console.log(\"Topup successful. Balance: \" + jsonData.balanceAfter);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 500000,\n  \"transactionId\": \"TOPUP-WORKFLOW-{{$timestamp}}\",\n  \"description\": \"Initial topup for testing\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/topup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"topup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Process Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save payment transaction ID for refund",
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"lastPaymentTransactionId\", jsonData.transactionId);",
+									"    console.log(\"Payment successful. New balance: \" + jsonData.balanceAfter);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 100000,\n  \"fee\": 2000,\n  \"tax\": 1000,\n  \"transactionId\": \"PAYMENT-WORKFLOW-{{$timestamp}}\",\n  \"merchantId\": \"MERCHANT-WORKFLOW\",\n  \"description\": \"Test payment transaction\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/payment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Get Account Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Get Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/history/{{accountId}}?page=1&pageSize=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"history",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Process Refund",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 100000,\n  \"transactionId\": \"REFUND-WORKFLOW-{{$timestamp}}\",\n  \"originalTransactionId\": \"{{lastPaymentTransactionId}}\",\n  \"description\": \"Refund for test payment\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/refund",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"refund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Apply Adjustment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 50000,\n  \"transactionId\": \"ADJUSTMENT-WORKFLOW-{{$timestamp}}\",\n  \"reason\": \"Loyalty bonus\",\n  \"adjustedBy\": \"system-admin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/transactions/adjustment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"transactions",
+								"adjustment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Final Balance Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/accounts/{{accountId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Complete workflow demonstrating all major operations in sequence"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "accountId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "user-001",
+			"type": "string"
+		},
+		{
+			"key": "accountNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lastPaymentTransactionId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

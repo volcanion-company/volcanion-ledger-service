@@ -84,6 +84,9 @@ public class TopupCommandHandler(
                 // Get the created transaction
                 var transaction = account.Transactions.Last();
 
+                // Persist the transaction
+                await unitOfWork.LedgerTransactions.AddAsync(transaction, cancellationToken);
+
                 // Create journal entries for double-entry bookkeeping
                 var journalEntries = new List<JournalEntry>
                 {

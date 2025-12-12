@@ -91,10 +91,10 @@ builder.Services.AddCors(options =>
     }
     else
     {
-        // Fallback: restrictive policy (no origins allowed)
+        // Development fallback: allow all origins (use restrictive policy in production)
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins() // Empty origins = no CORS
+            policy.AllowAnyOrigin()
                   .AllowAnyMethod()
                   .AllowAnyHeader();
         });

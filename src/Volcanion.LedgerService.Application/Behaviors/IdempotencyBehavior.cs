@@ -63,19 +63,30 @@ public class IdempotencyBehavior<TRequest, TResponse>(
         
         if (existingRecord != null)
         {
-            // Request already processed, return cached response
-            logger.LogInformation(
-                "Idempotent request detected: {IdempotencyKey} for {RequestType}",
-                idempotencyKey,
-                typeof(TRequest).Name);
-
-            if (!string.IsNullOrEmpty(existingRecord.Response))
+            // Check if the idempotency record has expired
+            if (existingRecord.ExpiresAt > DateTime.UtcNow)
             {
-                var cachedResponse = JsonSerializer.Deserialize<TResponse>(existingRecord.Response);
-                if (cachedResponse != null)
+                // Request already processed and not expired, return cached response
+                logger.LogInformation(
+                    "Idempotent request detected: {IdempotencyKey} for {RequestType}",
+                    idempotencyKey,
+                    typeof(TRequest).Name);
+
+                if (!string.IsNullOrEmpty(existingRecord.Response))
                 {
-                    return cachedResponse;
+                    var cachedResponse = JsonSerializer.Deserialize<TResponse>(existingRecord.Response);
+                    if (cachedResponse != null)
+                    {
+                        return cachedResponse;
+                    }
                 }
+            }
+            else
+            {
+                // Record expired, allow reprocessing
+                logger.LogInformation(
+                    "Expired idempotency record found for {IdempotencyKey}, allowing reprocessing",
+                    idempotencyKey);
             }
         }
 

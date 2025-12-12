@@ -78,20 +78,26 @@ public class LedgerTransactionRepository : ILedgerTransactionRepository
 
     public async Task<List<LedgerTransaction>> GetByAccountIdAndTypeAsync(
         Guid accountId, 
-        TransactionType type, 
+        TransactionType type,
+        int page = 1,
+        int pageSize = 50,
         CancellationToken cancellationToken = default)
     {
         return await _context.LedgerTransactions
             .AsNoTracking()
             .Where(t => t.AccountId == accountId && t.Type.Value == type.Value)
             .OrderByDescending(t => t.TransactionDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 
     public async Task<List<LedgerTransaction>> GetByDateRangeAsync(
         Guid accountId, 
         DateTime startDate, 
-        DateTime endDate, 
+        DateTime endDate,
+        int page = 1,
+        int pageSize = 50,
         CancellationToken cancellationToken = default)
     {
         return await _context.LedgerTransactions
@@ -100,6 +106,8 @@ public class LedgerTransactionRepository : ILedgerTransactionRepository
                        t.TransactionDate >= startDate && 
                        t.TransactionDate <= endDate)
             .OrderByDescending(t => t.TransactionDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync(cancellationToken);
     }
 

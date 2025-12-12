@@ -40,15 +40,15 @@ public class GetTransactionHistoryQueryHandler
                     request.EndDate.Value,
                     cancellationToken);
 
-                var allTransactions = await _unitOfWork.LedgerTransactions.GetByDateRangeAsync(
+                var pagedTransactions = await _unitOfWork.LedgerTransactions.GetByDateRangeAsync(
                     request.AccountId,
                     request.StartDate.Value,
                     request.EndDate.Value,
+                    request.Page,
+                    request.PageSize,
                     cancellationToken);
 
-                transactions = allTransactions
-                    .Skip((request.Page - 1) * request.PageSize)
-                    .Take(request.PageSize)
+                transactions = pagedTransactions
                     .Select(MapToDto)
                     .ToList();
             }
@@ -62,14 +62,14 @@ public class GetTransactionHistoryQueryHandler
                     type,
                     cancellationToken);
 
-                var allTransactions = await _unitOfWork.LedgerTransactions.GetByAccountIdAndTypeAsync(
+                var pagedTransactions = await _unitOfWork.LedgerTransactions.GetByAccountIdAndTypeAsync(
                     request.AccountId,
                     type,
+                    request.Page,
+                    request.PageSize,
                     cancellationToken);
 
-                transactions = allTransactions
-                    .Skip((request.Page - 1) * request.PageSize)
-                    .Take(request.PageSize)
+                transactions = pagedTransactions
                     .Select(MapToDto)
                     .ToList();
             }

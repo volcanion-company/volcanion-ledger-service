@@ -92,6 +92,9 @@ public class ProcessRefundCommandHandler(
 
                 var transaction = account.Transactions.Last();
 
+                // Persist the transaction
+                await unitOfWork.LedgerTransactions.AddAsync(transaction, cancellationToken);
+
                 // Create journal entries
                 var journalEntries = new List<JournalEntry>
                 {
